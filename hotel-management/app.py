@@ -35,6 +35,13 @@ def init_db():
                         room_id INTEGER,
                         FOREIGN KEY (user_id) REFERENCES users(id),
                         FOREIGN KEY (room_id) REFERENCES rooms(id))''')
+        c.execute("SELECT * FROM users WHERE username = ?", ('admin',))
+        if not c.fetchone():
+            c.execute("""INSERT INTO users (username, email, password, age, is_admin)
+                         VALUES (?, ?, ?, ?, ?)""",
+                      ('admin', 'admin@example.com', 'admin123', 30, 1))
+            conn.commit()
+            print("Admin user created: username='admin', password='admin123'")
         conn.commit()
 
 @app.route('/')
